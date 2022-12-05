@@ -1,5 +1,5 @@
 import unittest
-from part1 import Procedure, split_stack_ids, split_into_bins, parse_procedure, push_row, read_file
+from day5 import *
 
 
 def get_top_elements(stacks):
