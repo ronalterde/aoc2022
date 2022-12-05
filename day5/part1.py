@@ -16,10 +16,11 @@ move 1 from 1 to 2
 """
 
 import re
-from collections import deque
-from collections import namedtuple
+from collections import deque, namedtuple
+
 
 Procedure = namedtuple("Procedure", "count from_stack to_stack")
+
 
 def split_stack_ids(line):
     return [int(i) for i in line.strip().split()]
@@ -93,17 +94,3 @@ def read_file(filename):
             push_row(stacks, bins)
 
     return stacks, procedure_lines
-
-
-if __name__ == "__main__":
-    stacks, procedure_lines = read_file('input.txt')
-    procedures = [parse_procedure(i) for i in procedure_lines]
-
-    for procedure in procedures:
-        for _ in range(procedure.count):
-            stacks[procedure.to_stack].append(stacks[procedure.from_stack].pop())
-
-    # Print top stack elements
-    print(''.join([stack.pop() for stack in stacks]))
-
-    # The right answer is QNHWJVJZW

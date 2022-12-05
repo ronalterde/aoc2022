@@ -1,5 +1,35 @@
 import unittest
-from part1 import split_stack_ids, split_into_bins, parse_procedure, push_row
+from part1 import Procedure, split_stack_ids, split_into_bins, parse_procedure, push_row, read_file
+
+
+def get_top_elements(stacks):
+    return ''.join([stack[-1] for stack in stacks])
+
+
+class TestIntegration(unittest.TestCase):
+    def test_part1(self):
+        stacks, procedure_lines = read_file('input.txt')
+        procedures = [parse_procedure(i) for i in procedure_lines]
+
+        for procedure in procedures:
+            for _ in range(procedure.count):
+                stacks[procedure.to_stack].append(stacks[procedure.from_stack].pop())
+
+        self.assertEqual('QNHWJVJZW', get_top_elements(stacks))
+
+
+    def test_part2(self):
+        stacks, procedure_lines = read_file('input.txt')
+        procedures = [parse_procedure(i) for i in procedure_lines]
+
+        for procedure in procedures:
+            temp = []
+            for _ in range(procedure.count):
+                temp.append(stacks[procedure.from_stack].pop())
+            for item in reversed(temp):
+                stacks[procedure.to_stack].append(item)
+
+        self.assertEqual('BPCZJLFJW', get_top_elements(stacks))
 
 
 class TestInputParsing(unittest.TestCase):
@@ -22,8 +52,9 @@ class TestInputParsing(unittest.TestCase):
                 split_into_bins('[Z] [Z] [Q] [S] [F] [P] [B] [Q] [L]', bin_count=9))
 
     def test_parse_procedure(self):
-        self.assertEqual([2, 1, 7], parse_procedure("move 2 from 1 to 7"))
-        self.assertEqual([100, 101, 102], parse_procedure("move 100 from 101 to 102"))
+        self.assertEqual(Procedure(2, 0, 6), parse_procedure("move 2 from 1 to 7"))
+        self.assertEqual(Procedure(100, 100, 101), parse_procedure("move 100 from 101 to 102"))
+
 
 class TestStack(unittest.TestCase):
     def test_push_row(self):
