@@ -17,7 +17,9 @@ move 1 from 1 to 2
 
 import re
 from collections import deque
+from collections import namedtuple
 
+Procedure = namedtuple("Procedure", "count from_stack to_stack")
 
 def split_stack_ids(line):
     return [int(i) for i in line.strip().split()]
@@ -54,7 +56,8 @@ def split_into_bins(input_string, bin_count):
 def parse_procedure(s):
     pattern = re.compile("move (\d*) from (\d*) to (\d*)")
     match_groups = pattern.fullmatch(s).groups()
-    return [int(i) for i in match_groups]
+    values = [int(i) for i in match_groups]
+    return Procedure(count=values[0], from_stack=values[1] - 1, to_stack=values[2] - 1)
 
 
 def push_row(stacks, row):
@@ -63,15 +66,13 @@ def push_row(stacks, row):
            stacks[i].append(row[i])
 
 
-if __name__ == "__main__":
-    with open('input.txt') as f:
-        l = f.readlines()
-
+def read_file(filename):
+    with open(filename) as f:
         header_lines = []
-        body_lines = []
+        procedure_lines = []
 
         got_empty_line = False
-        for line in l:
+        for line in f:
             if line.strip() == '':
                 got_empty_line = True
                 continue
@@ -79,7 +80,7 @@ if __name__ == "__main__":
             if not got_empty_line:
                 header_lines.append(line.strip())
             else:
-                body_lines.append(line.strip())
+                procedure_lines.append(line.strip())
 
         stack_ids = [int(i) for i in header_lines[-1].split()]
         stack_count = len(stack_ids)
@@ -91,17 +92,18 @@ if __name__ == "__main__":
             bins = split_into_bins(line, bin_count=stack_count)
             push_row(stacks, bins)
 
-        # Apply procedures
-        for line in body_lines:
-            procedure = parse_procedure(line.strip())
-            count = procedure[0]
-            from_stack = procedure[1] - 1
-            to_stack = procedure[2] - 1
+    return stacks, procedure_lines
 
-            for _ in range(count):
-                stacks[to_stack].append(stacks[from_stack].pop())
 
-        # Print top stack elements
-        print(''.join([stack.pop() for stack in stacks]))
+if __name__ == "__main__":
+    stacks, procedure_lines = read_file('input.txt')
+    procedures = [parse_procedure(i) for i in procedure_lines]
 
-        # The right answer is QNHWJVJZW
+    for procedure in procedures:
+        for _ in range(procedure.count):
+            stacks[procedure.to_stack].append(stacks[procedure.from_stack].pop())
+
+    # Print top stack elements
+    print(''.join([stack.pop() for stack in stacks]))
+
+    # The right answer is QNHWJVJZW
