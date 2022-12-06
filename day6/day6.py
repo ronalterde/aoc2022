@@ -1,15 +1,14 @@
 from collections import deque
 
 
-def find_marker(s, windowsize=4):
-
-    d = deque()
-    i = 0
-    for c in s:
-        d.appendleft(c)
-        i = i+1
-        if len(d) == windowsize:
-            if len(set(d)) == windowsize:
-                return i
-            d.pop()
+def find_marker(input_string, windowsize=4):
+    queue = deque()
+    char_count = 0
+    for char in input_string:
+        queue.appendleft(char)
+        char_count = char_count + 1
+        if len(queue) == windowsize:
+            if len(set(queue)) == windowsize:
+                return char_count
+            queue.pop()
     return None
