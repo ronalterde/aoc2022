@@ -19,7 +19,7 @@ class TestPart1(unittest.TestCase):
     def test_example_from_right(self):
         trees = read_data('example.txt')
         trees_from_right = np.fliplr(trees)
-        right = for_all_rows(trees_from_right)
+        right = np.fliplr(for_all_rows(trees_from_right))
 
         expected = np.array([[0, 0, 0, 0, 0],
             [0, 0, 1, 0, 0],
@@ -83,8 +83,7 @@ class TestPart1(unittest.TestCase):
 
         fill_outer_edges(combined)
 
-        # TODO: 1916 is not the right solution!
-        # self.assertEqual(np.count_nonzero(combined), 1916)
+        self.assertEqual(np.count_nonzero(combined), 1825)
 
 class TestPart2(unittest.TestCase):
     pass

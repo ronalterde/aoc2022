@@ -39,7 +39,7 @@ def calculate_combined_map(trees):
     left = for_all_rows(trees)
 
     trees_from_right = np.fliplr(trees)
-    right = for_all_rows(trees_from_right)
+    right = np.fliplr(for_all_rows(trees_from_right))
 
     trees_from_top = np.transpose(trees)
     top = np.transpose(for_all_rows(trees_from_top))
