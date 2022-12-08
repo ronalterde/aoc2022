@@ -22,7 +22,6 @@ def for_all_rows(in_mat):
     result = np.zeros_like(in_mat)
     for row_index, row in enumerate(in_mat[1:-1, :]):
         for i in range(1, len(row)-1):
-            # print(row_index+1, i, row[i] > max(row[:i]), row[:i+1])
             if row[i] > max(row[:i]):
                 result[row_index+1, i] = 1
     return result

@@ -53,7 +53,6 @@ class TestPart1(unittest.TestCase):
             [0, 0, 1, 0, 0],
             [0, 0, 0, 0, 0]])
 
-        print(bottom)
         self.assertTrue(np.array_equal(bottom, expected))
 
     def test_all_directions_combined(self):
