@@ -46,6 +46,27 @@ def run_program(filename, verbose=False):
     return results
 
 
+def render_image(results):
+    column = 0
+    # Note: adding [1] in front to shift by one
+    # (need to consider previous result; end of vs. during cycle)
+    for sprite_pos in [1] + results:
+        if (sprite_pos-1) <= column <= (sprite_pos+1):
+            print('#', end='')
+        else:
+            print('.', end='')
+
+        if column >= 39:
+            column = 0
+            print('')
+        else:
+            column = column + 1
+
+
 if __name__ == "__main__":
-    results = run_program('input.txt', verbose=True)
-    print(sum(calculate_signal_strength(results, interesting_cycles)))
+    results = run_program('input.txt', verbose=False)
+    print("PART 1:", sum(calculate_signal_strength(results, interesting_cycles)))
+    print('')
+
+    print("PART 2:")
+    render_image(results)
