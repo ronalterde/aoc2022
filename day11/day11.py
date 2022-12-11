@@ -3,7 +3,6 @@ import math
 import numpy as np
 
 
-VERBOSE = False
 PART1 = False
 if PART1:
     ROUNDS = 20
@@ -58,12 +57,11 @@ def complete(monkey):
         and 'divisor' in monkey and 'condition_true' in monkey and 'condition_false' in monkey
 
 
-if __name__ == "__main__":
-
+def parse_input_file(filename):
     monkeys = {}
     current_monkey_no = None
 
-    with open('input.txt') as f:
+    with open(filename) as f:
         state = 'wait_for_monkey'
         for line in f:
             if state == 'wait_for_monkey':
@@ -98,49 +96,33 @@ if __name__ == "__main__":
                     monkeys[current_monkey_no]['inspected_count'] = 0
                     state = 'wait_for_monkey'
 
-    for i in monkeys:
-        if VERBOSE:
-            print(i, monkeys[i])
+        return monkeys    
+
+
+if __name__ == "__main__":
+    monkeys = parse_input_file('input.txt')
 
     # Idea from: https://github.com/xconnected/adventofcode/blob/main/2022/day11.py
     common_divisor = np.lcm.reduce([monkeys[i]['divisor'] for i in monkeys])
 
     for round in range(ROUNDS):
         for i in monkeys:
-            if VERBOSE:
-                print(f"Monkey {i}")
             items = monkeys[i]['starting_items']
             monkeys[i]['inspected_count'] = monkeys[i]['inspected_count'] + len(items)
             if len(items) > 0:
                 for value in items:
                     value = value % common_divisor
-                    if VERBOSE:
-                        print(f"  Monkey inspects an item with a worry level of {value}.")
                     old = value
                     value = eval(monkeys[i]['operation'])
-                    if VERBOSE:
-                        print(f"  Worry level is now {value}.")
                     if PART1:
                         value = int(value / 3)
-                        if VERBOSE:
-                            print(f"  Monkey gets bored with item. Worry level is divided by 3 to {value}.")
                     divisor = monkeys[i]['divisor']
                     test_result = value % divisor == 0
-                    if VERBOSE:
-                        print(f"  test result:{test_result}")
                     if test_result:
                         dest_monkey = monkeys[i]['condition_true']
                     else:
                         dest_monkey = monkeys[i]['condition_false']
-                    if VERBOSE:
-                        print(f"  Item with worry level {value} is thrown to monkey {dest_monkey}.")
                     monkeys[dest_monkey]['starting_items'].append(value)
                 monkeys[i]['starting_items'].clear()
-
-        if VERBOSE:
-            print(f"After round {round}:")
-        for i in monkeys:
-            if VERBOSE:
-                print(i, monkeys[i])
 
     print('monkey business:', math.prod(sorted([monkeys[i]['inspected_count'] for i in monkeys])[-2:]))
