@@ -13,13 +13,12 @@ def parse_input(filename):
 if __name__ == "__main__":
     # a) Simple example in 2 dimensions:
     a = np.array([[0, 0, 1], [0, 1, 0], [1, 1, 1], [0, 1, 0], [0, 0, 1]])
-    kernel = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
-    sum = np.sum((4 - convolve(a, kernel, mode='same')) * a)
-    print(sum)
-
+    kernel_2d = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
+    sum_a = np.sum((4 - convolve(a, kernel_2d, mode='same')) * a)
+    # print(sum_a)
 
     # b) The real thing in 3 dimensions:
-    points = parse_input('example.txt')
+    points = parse_input('input.txt')
 
     x_max = max([i[0] for i in points])
     y_max = max([i[1] for i in points])
@@ -33,16 +32,16 @@ if __name__ == "__main__":
         z = point[2]
         mat[x][y][z] = 1
 
-    kernel = np.zeros((3, 3, 3), dtype='int')
-    kernel[0, 1, 1] = 1
-    kernel[2, 1, 1] = 1
-    kernel[1, 0, 1] = 1
-    kernel[1, 2, 1] = 1
-    kernel[1, 1, 0] = 1
-    kernel[1, 1, 2] = 1
+    kernel_3d = np.zeros((3, 3, 3), dtype='int')
+    kernel_3d[0, 1, 1] = 1
+    kernel_3d[2, 1, 1] = 1
+    kernel_3d[1, 0, 1] = 1
+    kernel_3d[1, 2, 1] = 1
+    kernel_3d[1, 1, 0] = 1
+    kernel_3d[1, 1, 2] = 1
 
-    sum = np.sum((6 - convolve(mat, kernel, mode='same')) * mat)
-    print(sum)
+    sum_b = np.sum((6 - convolve(mat, kernel_3d, mode='same')) * mat)
+    print("Part 1:", sum_b)
 
     # import matplotlib.pyplot as plt
     #
@@ -55,3 +54,18 @@ if __name__ == "__main__":
     # ax.scatter(x, y, z, c=z, alpha=1)
     #
     # plt.show()
+
+    # c) Part 2: ignore inner cubes of air not reachable from outside.
+    # Find '0' cubes fully framed by '1' cubes
+    aa = convolve(a, kernel_2d, mode='same')
+    aa = 4 * (aa == 4)
+    aa = aa * (a == 0)
+    sum_c = np.sum(aa)
+    # print(sum)
+
+    # d) Now do the same for 3d array:
+    aa = convolve(mat, kernel_3d, mode='same')
+    aa = 6 * (aa == 6)
+    aa = aa * (mat == 0)
+    sum_d = np.sum(aa)
+    print("Part 2:", sum_b - sum_d)
